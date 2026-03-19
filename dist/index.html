@@ -1321,7 +1321,7 @@ const IS_NETLIFY = (
   !window.location.hostname.includes('anthropic')
 );
 
-function fetchWithTimeout(url, opts = {}, ms = 4000) {
+function fetchWithTimeout(url, opts = {}, ms = 15000) {
   const ctrl = new AbortController();
   const id = setTimeout(() => ctrl.abort(), ms);
   return fetch(url, { ...opts, signal: ctrl.signal })
@@ -2012,11 +2012,23 @@ function closeProductForm() {
 function handleImageUpload(e) {
   const file = e.target.files[0];
   if (!file) return;
+  // Compress image to max 800px wide, JPEG 0.7 quality to keep cloud payload small
   const reader = new FileReader();
   reader.onload = ev => {
-    document.getElementById('img-preview').src = ev.target.result;
-    document.getElementById('img-preview').classList.add('show');
-    document.getElementById('img-placeholder').classList.add('hidden');
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const compressed = canvas.toDataURL('image/jpeg', 0.7);
+      document.getElementById('img-preview').src = compressed;
+      document.getElementById('img-preview').classList.add('show');
+      document.getElementById('img-placeholder').classList.add('hidden');
+    };
+    img.src = ev.target.result;
   };
   reader.readAsDataURL(file);
 }
