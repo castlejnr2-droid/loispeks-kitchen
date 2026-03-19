@@ -1333,7 +1333,7 @@ class CloudStorage {
     if (!IS_NETLIFY) return null;
     try {
       const res = await fetchWithTimeout(
-        `/.netlify/functions/getBlob?key=${encodeURIComponent(key)}`
+        `/api?action=get&key=${encodeURIComponent(key)}`
       );
       if (!res.ok) return null;
       const data = await res.json();
@@ -1345,7 +1345,7 @@ class CloudStorage {
   async put(key, value) {
     if (!IS_NETLIFY) { lsSet('lp_' + key, value); return true; }
     try {
-      const res = await fetchWithTimeout('/.netlify/functions/putBlob', {
+      const res = await fetchWithTimeout('/api?action=put', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key, value })
@@ -1361,7 +1361,7 @@ class CloudStorage {
     if (!IS_NETLIFY) return true;
     try {
       const res = await fetchWithTimeout(
-        `/.netlify/functions/deleteBlob?key=${encodeURIComponent(key)}`
+        `/api?action=delete&key=${encodeURIComponent(key)}`
       );
       return res.ok;
     } catch {

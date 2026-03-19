@@ -1,14 +1,18 @@
 [build]
   publish = "dist"
-  command = "echo 'No build step required'"
+  command = "npm install"
 
 [functions]
-  node_bundler = "esbuild"
   directory = "netlify/functions"
 
 [[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/api"
+  to = "/.netlify/functions/api"
   status = 200
 
 [[redirects]]
