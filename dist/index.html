@@ -2112,4 +2112,22 @@ function lsGet(k) {
 /* ============================================================
    KEYBOARD SHORTCUTS
    ============================================================ */
-docu
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeAllModals();
+  }
+});
+
+function closeAllModals() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show'));
+  document.body.style.overflow = '';
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', init);
+
+</script>
+</body>
+</html>
