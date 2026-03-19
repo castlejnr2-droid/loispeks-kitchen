@@ -1,0 +1,2115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lois-Peks Kitchen — Nigerian Snacks, Pastries & Event Catering</title>
+<meta name="description" content="Fresh Nigerian snacks, pastries, small chops and professional event catering. Order online today from Lois-Peks Kitchen!">
+<meta name="theme-color" content="#8B1A1A">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --primary: #8B1A1A;
+  --primary-dark: #691212;
+  --primary-light: #a82222;
+  --accent: #E8A317;
+  --accent-dark: #c48a0f;
+  --accent-light: #f5bc40;
+  --cream: #FDF5E6;
+  --cream-dark: #f0e2c8;
+  --cream-deeper: #e6d0a8;
+  --text: #2C1810;
+  --text-mid: #5a3320;
+  --text-light: #9a7060;
+  --white: #ffffff;
+  --success: #2a7a42;
+  --error: #b92b2b;
+  --wa-green: #25D366;
+  --shadow-sm: 0 2px 10px rgba(139,26,26,0.1);
+  --shadow-md: 0 6px 28px rgba(139,26,26,0.15);
+  --shadow-lg: 0 14px 50px rgba(139,26,26,0.22);
+  --shadow-gold: 0 4px 22px rgba(232,163,23,0.35);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --radius-lg: 22px;
+  --t: 0.3s cubic-bezier(0.4,0,0.2,1);
+  --fh: 'Playfair Display', Georgia, serif;
+  --fb: 'Poppins', sans-serif;
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:var(--fb);
+  color:var(--text);
+  background-color:var(--cream);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg opacity='0.032' fill='%238B1A1A'%3E%3Cpath d='M34 48 Q34 36 46 36 Q58 36 58 48 L54 64 L38 64 Z'/%3E%3Crect x='38' y='64' width='16' height='10' rx='3'/%3E%3Ccircle cx='46' cy='30' r='5'/%3E%3Cellipse cx='128' cy='44' rx='20' ry='14'/%3E%3Crect x='108' y='44' width='40' height='9' rx='2'/%3E%3Ccircle cx='34' cy='128' r='16'/%3E%3Ccircle cx='29' cy='122' r='2.5'/%3E%3Ccircle cx='39' cy='122' r='2.5'/%3E%3Ccircle cx='34' cy='134' r='2.5'/%3E%3Cpolygon points='128,105 132,117 145,117 135,125 139,137 128,129 117,137 121,125 111,117 124,117'/%3E%3C/g%3E%3C/svg%3E");
+  background-size:180px 180px;
+  min-height:100vh;
+  overflow-x:hidden;
+  line-height:1.65;
+}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;border:none;outline:none;font-family:var(--fb);background:none}
+input,textarea,select{font-family:var(--fb);outline:none}
+ul,ol{list-style:none}
+
+.container{max-width:1200px;margin:0 auto;padding:0 18px}
+
+/* ============================================================
+   LOADING OVERLAY
+   ============================================================ */
+#loading-overlay{
+  position:fixed;inset:0;background:var(--cream);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:9999;transition:opacity .6s ease,visibility .6s ease;
+}
+#loading-overlay.hidden{opacity:0;visibility:hidden;pointer-events:none}
+.load-brand{
+  font-family:var(--fh);font-size:2.2rem;font-weight:800;color:var(--primary);
+  margin-bottom:6px;letter-spacing:-0.5px;
+  animation:lpulse 1.6s ease-in-out infinite;
+}
+.load-tagline{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-dark);margin-bottom:2rem;font-weight:500}
+.load-spinner{width:38px;height:38px;border:3px solid var(--cream-dark);border-top-color:var(--primary);border-radius:50%;animation:lspin .8s linear infinite}
+@keyframes lspin{to{transform:rotate(360deg)}}
+@keyframes lpulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+/* ============================================================
+   TOASTS
+   ============================================================ */
+#toast-container{position:fixed;top:76px;right:16px;z-index:10000;display:flex;flex-direction:column;gap:8px;max-width:310px;pointer-events:none}
+.toast{
+  background:var(--white);border-radius:10px;padding:11px 15px;
+  display:flex;align-items:center;gap:10px;
+  box-shadow:var(--shadow-md);border-left:4px solid var(--accent);
+  animation:toastIn .3s ease forwards;font-size:.83rem;font-weight:500;
+  pointer-events:all;
+}
+.toast.success{border-left-color:var(--success)}
+.toast.error{border-left-color:var(--error)}
+.toast.info{border-left-color:var(--primary)}
+.toast-icon{font-size:1rem;flex-shrink:0}
+.toast.success .toast-icon{color:var(--success)}
+.toast.error .toast-icon{color:var(--error)}
+.toast.info .toast-icon{color:var(--primary)}
+@keyframes toastIn{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes toastOut{from{transform:translateX(0);opacity:1}to{transform:translateX(110%);opacity:0}}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+#navbar{
+  position:sticky;top:0;z-index:1000;
+  background:rgba(253,245,230,.96);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--cream-dark);
+  box-shadow:var(--shadow-sm);
+}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;padding:0 18px;max-width:1200px;margin:0 auto;
+}
+.nav-logo{display:flex;flex-direction:column;line-height:1.1;gap:1px}
+.nav-logo-main{font-family:var(--fh);font-size:1.18rem;font-weight:800;color:var(--primary);letter-spacing:-.4px}
+.nav-logo-sub{font-size:.58rem;color:var(--accent-dark);font-weight:600;letter-spacing:2px;text-transform:uppercase}
+.nav-links{display:none;align-items:center;gap:2rem}
+.nav-link{font-size:.82rem;font-weight:500;color:var(--text-mid);transition:color var(--t);position:relative;padding-bottom:2px}
+.nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:var(--accent);transition:width var(--t)}
+.nav-link:hover{color:var(--primary)}
+.nav-link:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-cart-btn{
+  background:var(--primary);color:var(--white);padding:8px 16px;
+  border-radius:50px;font-size:.78rem;font-weight:600;
+  display:flex;align-items:center;gap:6px;transition:all var(--t);position:relative;
+}
+.nav-cart-btn:hover{background:var(--primary-dark);transform:translateY(-1px)}
+.nav-badge{
+  background:var(--accent);color:var(--text);font-size:.6rem;font-weight:800;
+  width:17px;height:17px;border-radius:50%;display:none;
+  align-items:center;justify-content:center;
+  position:absolute;top:-6px;right:-6px;
+}
+.nav-badge.show{display:flex}
+.hamburger{background:none;border:none;padding:5px;display:flex;flex-direction:column;gap:5px;cursor:pointer}
+.hamburger span{display:block;width:22px;height:2px;background:var(--primary);border-radius:2px;transition:all var(--t)}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0;transform:translateX(-8px)}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+#mobile-nav{
+  display:none;position:fixed;top:64px;left:0;right:0;
+  background:var(--cream);border-bottom:2px solid var(--accent);
+  z-index:998;
+}
+#mobile-nav.open{display:block}
+.mob-link{
+  display:block;padding:.9rem 1.5rem;font-size:.95rem;font-weight:500;
+  color:var(--text);border-bottom:1px solid var(--cream-dark);
+  transition:all var(--t);
+}
+.mob-link:last-child{border-bottom:none}
+.mob-link:hover{background:var(--cream-dark);color:var(--primary);padding-left:2.2rem}
+@media(min-width:768px){
+  .nav-links{display:flex}
+  .hamburger{display:none}
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero{
+  position:relative;min-height:100vh;
+  display:flex;align-items:center;overflow:hidden;
+  background:linear-gradient(135deg,#1e0c07 0%,#4a1010 30%,#8B1A1A 65%,#a82020 100%);
+}
+.hero-pattern{
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='1.5' fill='%23E8A317' opacity='0.12'/%3E%3Ccircle cx='0' cy='0' r='1' fill='%23E8A317' opacity='0.08'/%3E%3Ccircle cx='60' cy='0' r='1' fill='%23E8A317' opacity='0.08'/%3E%3Ccircle cx='0' cy='60' r='1' fill='%23E8A317' opacity='0.08'/%3E%3Ccircle cx='60' cy='60' r='1' fill='%23E8A317' opacity='0.08'/%3E%3C/svg%3E");
+  background-size:60px 60px;
+}
+.hero-glow{
+  position:absolute;width:700px;height:700px;
+  background:radial-gradient(circle,rgba(232,163,23,.12) 0%,transparent 65%);
+  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+}
+.hero-content{
+  position:relative;z-index:2;text-align:center;
+  padding:7rem 1.25rem 5rem;max-width:800px;margin:0 auto;
+}
+.hero-badge{
+  display:inline-block;
+  background:rgba(232,163,23,.18);border:1px solid rgba(232,163,23,.45);
+  color:var(--accent);font-size:.68rem;font-weight:700;letter-spacing:3.5px;
+  text-transform:uppercase;padding:6px 18px;border-radius:100px;margin-bottom:1.6rem;
+  animation:fadeUp .8s ease .2s both;
+}
+.hero-title{
+  font-family:var(--fh);font-size:clamp(2.6rem,9vw,5.2rem);font-weight:800;
+  color:var(--white);line-height:1.08;margin-bottom:1rem;letter-spacing:-.5px;
+  animation:fadeUp .8s ease .4s both;
+}
+.hero-title em{color:var(--accent);font-style:italic;display:block}
+.hero-sub{
+  font-size:clamp(.9rem,2.5vw,1.12rem);color:rgba(255,255,255,.78);
+  font-weight:300;margin:0 auto 2.6rem;max-width:480px;
+  animation:fadeUp .8s ease .6s both;
+}
+.hero-ctas{
+  display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-bottom:3rem;
+  animation:fadeUp .8s ease .8s both;
+}
+.btn-gold{
+  background:var(--accent);color:var(--text);font-weight:700;font-size:.88rem;
+  padding:13px 28px;border-radius:50px;transition:all var(--t);letter-spacing:.4px;
+  box-shadow:var(--shadow-gold);display:inline-flex;align-items:center;gap:8px;
+}
+.btn-gold:hover{background:var(--accent-light);transform:translateY(-3px);box-shadow:0 8px 32px rgba(232,163,23,.55)}
+.btn-ghost{
+  background:transparent;color:var(--white);font-weight:600;font-size:.88rem;
+  padding:12px 28px;border-radius:50px;border:2px solid rgba(255,255,255,.38);
+  transition:all var(--t);letter-spacing:.4px;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-ghost:hover{border-color:var(--white);background:rgba(255,255,255,.1);transform:translateY(-3px)}
+.hero-socials{display:flex;justify-content:center;gap:11px;animation:fadeUp .8s ease 1s both}
+.hero-soc{
+  width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:var(--white);font-size:.95rem;transition:all var(--t);
+}
+.hero-soc:hover{background:var(--accent);border-color:var(--accent);color:var(--text);transform:translateY(-3px) scale(1.12)}
+.hero-scroll{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  color:rgba(255,255,255,.4);font-size:.68rem;letter-spacing:1.5px;
+  animation:scrollBounce 2.2s ease-in-out infinite;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scrollBounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-9px)}}
+
+/* ============================================================
+   SECTION SHARED
+   ============================================================ */
+.sec-header{text-align:center;margin-bottom:2.2rem}
+.sec-eyebrow{
+  display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:.8rem;
+  font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent-dark);font-weight:700;
+}
+.sec-eyebrow::before,.sec-eyebrow::after{content:'';width:40px;height:1.5px;background:linear-gradient(90deg,transparent,var(--accent))}
+.sec-eyebrow::after{background:linear-gradient(90deg,var(--accent),transparent)}
+.sec-title{font-family:var(--fh);font-size:clamp(1.7rem,4.5vw,2.7rem);font-weight:800;color:var(--primary);margin-bottom:.4rem}
+.sec-sub{color:var(--text-light);font-size:.9rem}
+
+/* ============================================================
+   MENU SECTION
+   ============================================================ */
+#menu{padding:5.5rem 0}
+
+.cat-filters{
+  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+  margin-bottom:1.5rem;padding:0 18px;
+}
+.cat-btn{
+  padding:8px 16px;border-radius:50px;font-size:.78rem;font-weight:600;
+  background:var(--white);color:var(--text-mid);border:1.5px solid var(--cream-dark);
+  transition:all var(--t);white-space:nowrap;box-shadow:var(--shadow-sm);
+}
+.cat-btn:hover{border-color:var(--primary);color:var(--primary)}
+.cat-btn.active{background:var(--primary);color:var(--white);border-color:var(--primary)}
+
+.search-wrap{max-width:420px;margin:0 auto 2.8rem;padding:0 18px;position:relative}
+.search-input{
+  width:100%;padding:12px 20px 12px 44px;
+  border:1.5px solid var(--cream-dark);border-radius:50px;
+  background:var(--white);font-size:.88rem;color:var(--text);
+  transition:all var(--t);box-shadow:var(--shadow-sm);
+}
+.search-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(139,26,26,.09)}
+.search-input::placeholder{color:var(--text-light)}
+.search-ic{position:absolute;left:32px;top:50%;transform:translateY(-50%);color:var(--text-light);font-size:.88rem}
+
+.products-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+  gap:1.5rem;padding:0 18px;max-width:1200px;margin:0 auto;
+}
+
+/* Product Card */
+.product-card{
+  background:var(--white);border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow-sm);
+  transition:all var(--t);position:relative;
+}
+.product-card:hover{transform:translateY(-7px);box-shadow:var(--shadow-lg)}
+.pc-img-wrap{position:relative;overflow:hidden;height:185px;background:var(--cream-dark)}
+.pc-img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease}
+.product-card:hover .pc-img{transform:scale(1.07)}
+.pc-badge{
+  position:absolute;top:10px;left:10px;
+  background:var(--accent);color:var(--text);
+  font-size:.62rem;font-weight:800;padding:4px 11px;border-radius:100px;
+  text-transform:uppercase;letter-spacing:.8px;box-shadow:0 2px 8px rgba(0,0,0,.18);
+}
+.pc-body{padding:1.1rem 1.25rem 1.35rem}
+.pc-name{font-family:var(--fh);font-size:1.03rem;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.3}
+.pc-price{font-size:1.22rem;font-weight:800;color:var(--primary);margin-bottom:1rem;font-family:var(--fh)}
+.add-btn{
+  width:100%;padding:10px;background:var(--primary);color:var(--white);
+  border-radius:var(--radius-sm);font-size:.84rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:all var(--t);
+}
+.add-btn:hover{background:var(--primary-dark)}
+.add-btn:active{transform:scale(.97)}
+
+.no-products{
+  grid-column:1/-1;text-align:center;
+  padding:4rem 1rem;color:var(--text-light);
+}
+.no-products i{font-size:3rem;margin-bottom:1rem;opacity:.35;display:block}
+
+/* ============================================================
+   CART SIDEBAR
+   ============================================================ */
+#cart-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.52);
+  z-index:2000;opacity:0;visibility:hidden;transition:all var(--t);
+}
+#cart-overlay.open{opacity:1;visibility:visible}
+#cart-sidebar{
+  position:fixed;top:0;right:0;bottom:0;
+  width:min(390px,96vw);background:var(--cream);
+  z-index:2001;transform:translateX(100%);transition:transform var(--t);
+  display:flex;flex-direction:column;box-shadow:-10px 0 50px rgba(0,0,0,.25);
+}
+#cart-sidebar.open{transform:translateX(0)}
+.cart-hdr{
+  padding:1.25rem 1.5rem;background:var(--primary);color:var(--white);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.cart-hdr h3{font-family:var(--fh);font-size:1.2rem;font-weight:700}
+.cart-cls{
+  background:rgba(255,255,255,.15);color:var(--white);
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:1rem;
+  transition:all var(--t);
+}
+.cart-cls:hover{background:rgba(255,255,255,.3)}
+.cart-items{flex:1;overflow-y:auto;padding:1rem 1.5rem}
+.cart-empty{text-align:center;padding:3rem 1rem;color:var(--text-light)}
+.cart-empty i{font-size:3rem;margin-bottom:1rem;opacity:.35;display:block}
+.cart-item{
+  display:flex;gap:12px;padding:1rem 0;
+  border-bottom:1px solid var(--cream-dark);align-items:center;
+}
+.cart-item:last-child{border-bottom:none}
+.ci-img{width:60px;height:60px;border-radius:8px;object-fit:cover;flex-shrink:0}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-size:.84rem;font-weight:600;margin-bottom:3px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-price{font-size:.84rem;font-weight:800;color:var(--primary)}
+.ci-ctrl{display:flex;align-items:center;gap:8px;margin-top:6px}
+.qty-btn{
+  width:26px;height:26px;border-radius:50%;background:var(--cream-dark);
+  color:var(--text);font-size:.88rem;display:flex;align-items:center;justify-content:center;
+  font-weight:700;transition:all var(--t);
+}
+.qty-btn:hover{background:var(--primary);color:var(--white)}
+.qty-num{font-size:.88rem;font-weight:700;min-width:18px;text-align:center}
+.ci-rm{color:var(--text-light);font-size:.82rem;padding:3px;transition:color var(--t);margin-left:4px}
+.ci-rm:hover{color:var(--error)}
+.cart-ftr{padding:1.25rem 1.5rem;background:var(--white);border-top:2px solid var(--cream-dark);flex-shrink:0}
+.cart-tot{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.cart-tot-lbl{font-size:.85rem;font-weight:600;color:var(--text-mid)}
+.cart-tot-amt{font-family:var(--fh);font-size:1.45rem;font-weight:800;color:var(--primary)}
+.chk-btn{
+  width:100%;padding:14px;background:var(--accent);color:var(--text);
+  border-radius:var(--radius-sm);font-size:.9rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  transition:all var(--t);box-shadow:var(--shadow-gold);
+}
+.chk-btn:hover{background:var(--accent-light);transform:translateY(-2px)}
+
+/* ============================================================
+   CHECKOUT MODAL
+   ============================================================ */
+#checkout-modal{
+  position:fixed;inset:0;z-index:3000;
+  display:flex;align-items:center;justify-content:center;
+  padding:1rem;background:rgba(0,0,0,.62);
+  opacity:0;visibility:hidden;transition:all var(--t);
+}
+#checkout-modal.open{opacity:1;visibility:visible}
+.modal-box{
+  background:var(--cream);border-radius:var(--radius-lg);
+  width:100%;max-width:520px;max-height:92vh;overflow-y:auto;
+  box-shadow:0 24px 70px rgba(0,0,0,.35);
+  animation:modalPop .3s ease;
+}
+@keyframes modalPop{from{transform:scale(.88) translateY(22px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.modal-hdr{
+  padding:1.4rem 1.5rem;background:var(--primary);color:var(--white);
+  border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;
+}
+.modal-hdr h3{font-family:var(--fh);font-size:1.25rem;font-weight:700}
+.modal-cls{
+  background:rgba(255,255,255,.15);color:var(--white);
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;transition:all var(--t);
+}
+.modal-cls:hover{background:rgba(255,255,255,.3)}
+.modal-body{padding:1.5rem}
+
+.order-summary-box{
+  background:var(--white);border-radius:var(--radius-sm);
+  padding:1rem 1.1rem;margin-bottom:1.5rem;border:1px solid var(--cream-dark);
+}
+.osb-title{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-light);margin-bottom:.8rem}
+.osb-item{display:flex;justify-content:space-between;font-size:.82rem;padding:3px 0;color:var(--text-mid)}
+.osb-total{display:flex;justify-content:space-between;font-weight:800;font-size:1rem;padding-top:8px;border-top:1px solid var(--cream-dark);margin-top:6px;color:var(--primary)}
+
+/* Form */
+.fg{margin-bottom:1rem}
+.flbl{display:block;font-size:.76rem;font-weight:700;color:var(--text-mid);margin-bottom:5px;letter-spacing:.3px}
+.finp{
+  width:100%;padding:11px 14px;border:1.5px solid var(--cream-dark);
+  border-radius:var(--radius-sm);background:var(--white);font-size:.88rem;color:var(--text);
+  transition:all var(--t);
+}
+.finp:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(139,26,26,.08)}
+.finp::placeholder{color:var(--text-light)}
+select.finp{
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239a7060' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;padding-right:38px;
+}
+textarea.finp{resize:vertical;min-height:78px}
+.place-btn{
+  width:100%;padding:14px;background:var(--primary);color:var(--white);
+  border-radius:var(--radius-sm);font-size:.92rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all var(--t);margin-top:.75rem;
+}
+.place-btn:hover{background:var(--primary-dark)}
+.place-btn:disabled{opacity:.65;cursor:not-allowed;transform:none}
+
+/* Order Success */
+.order-success{text-align:center;padding:2.5rem 1.5rem}
+.success-ring{
+  width:86px;height:86px;border-radius:50%;
+  background:rgba(42,122,66,.1);margin:0 auto 1.2rem;
+  display:flex;align-items:center;justify-content:center;
+  font-size:2.8rem;color:var(--success);
+}
+.order-success h4{font-family:var(--fh);font-size:1.6rem;color:var(--primary);margin-bottom:.5rem}
+.order-success p{color:var(--text-light);font-size:.87rem;margin-bottom:1.5rem;line-height:1.7}
+.wa-confirm-btn{
+  display:inline-flex;align-items:center;gap:9px;
+  background:var(--wa-green);color:var(--white);
+  padding:12px 24px;border-radius:var(--radius-sm);font-size:.88rem;font-weight:700;
+  transition:all var(--t);
+}
+.wa-confirm-btn:hover{background:#1ea855;transform:translateY(-2px)}
+
+/* ============================================================
+   CATERING SECTION
+   ============================================================ */
+#catering{
+  padding:5.5rem 0;
+  background:linear-gradient(180deg,var(--cream-dark) 0%,var(--cream) 100%);
+}
+.catering-inner{max-width:680px;margin:0 auto;padding:0 18px}
+.cat-form-box{
+  background:var(--white);border-radius:var(--radius-lg);
+  padding:2.2rem;box-shadow:var(--shadow-md);border:1px solid var(--cream-dark);
+}
+.frow{display:grid;gap:1rem}
+@media(min-width:500px){.frow.two{grid-template-columns:1fr 1fr}}
+.cat-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:1.6rem}
+.btn-submit{
+  flex:1;min-width:130px;padding:13px 18px;background:var(--primary);color:var(--white);
+  border-radius:var(--radius-sm);font-size:.88rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:all var(--t);
+}
+.btn-submit:hover{background:var(--primary-dark)}
+.btn-submit:disabled{opacity:.65;cursor:not-allowed}
+.btn-wa{
+  flex:1;min-width:130px;padding:13px 18px;background:var(--wa-green);color:var(--white);
+  border-radius:var(--radius-sm);font-size:.88rem;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:8px;transition:all var(--t);
+}
+.btn-wa:hover{background:#1ea855;transform:translateY(-2px)}
+
+/* ============================================================
+   ABOUT SECTION
+   ============================================================ */
+#about{padding:5.5rem 0}
+.about-inner{max-width:960px;margin:0 auto;padding:0 18px;display:grid;gap:3rem}
+.about-text-block{font-size:1.02rem;line-height:1.85;color:var(--text-mid);text-align:center}
+.about-text-block p{margin-bottom:1rem}
+.about-text-block p:last-child{margin-bottom:0}
+.about-feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:1.2rem}
+.about-feat{
+  background:var(--white);border-radius:var(--radius);padding:1.6rem 1rem;
+  text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--cream-dark);
+  transition:all var(--t);
+}
+.about-feat:hover{transform:translateY(-5px);box-shadow:var(--shadow-md)}
+.af-icon{font-size:2.1rem;margin-bottom:.8rem;display:block}
+.af-title{font-family:var(--fh);font-size:.92rem;font-weight:700;color:var(--primary);margin-bottom:.4rem}
+.af-text{font-size:.77rem;color:var(--text-light);line-height:1.55}
+
+/* ============================================================
+   CONTACT / FOOTER
+   ============================================================ */
+#contact{
+  background:linear-gradient(140deg,#1e0c07 0%,#4a1010 50%,#8B1A1A 100%);
+  padding:4.5rem 0 2rem;color:var(--white);
+}
+.contact-grid{
+  max-width:1000px;margin:0 auto;padding:0 18px;
+  display:grid;gap:2.5rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  margin-bottom:3rem;
+}
+.cc h4{font-family:var(--fh);font-size:1.08rem;font-weight:700;color:var(--accent);margin-bottom:1.1rem}
+.cc-link{
+  display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.72);
+  font-size:.83rem;padding:4px 0;transition:all var(--t);
+}
+.cc-link:hover{color:var(--accent);transform:translateX(3px)}
+.cc-link i{width:16px;color:var(--accent);opacity:.75;flex-shrink:0}
+.soc-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.soc-pill{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  color:var(--white);padding:6px 14px;border-radius:100px;font-size:.76rem;
+  display:flex;align-items:center;gap:6px;transition:all var(--t);
+}
+.soc-pill:hover{background:var(--accent);border-color:var(--accent);color:var(--text)}
+.hours-list{display:flex;flex-direction:column;gap:4px}
+.hours-row{display:flex;justify-content:space-between;font-size:.8rem;color:rgba(255,255,255,.65);padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.07)}
+.hours-row:last-child{border-bottom:none}
+.hours-day{font-weight:600;color:rgba(255,255,255,.85)}
+.footer-btm{
+  text-align:center;padding:1.5rem 1rem 0;
+  border-top:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.42);font-size:.76rem;
+}
+.footer-btm a{color:var(--accent)}
+
+/* ============================================================
+   FLOATING BUTTONS
+   ============================================================ */
+#call-fab{
+  position:fixed;bottom:104px;right:20px;
+  width:54px;height:54px;border-radius:50%;
+  background:var(--accent);color:var(--text);font-size:1.25rem;
+  display:flex;align-items:center;justify-content:center;
+  z-index:1500;box-shadow:var(--shadow-gold);transition:all var(--t);
+  animation:fabPulse 2.6s ease-in-out infinite;
+}
+#call-fab:hover{transform:scale(1.12);animation:none;box-shadow:0 6px 32px rgba(232,163,23,.6)}
+@keyframes fabPulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(232,163,23,.45),var(--shadow-gold)}
+  50%{box-shadow:0 0 0 14px rgba(232,163,23,0),var(--shadow-gold)}
+}
+#cart-fab{
+  position:fixed;bottom:32px;right:20px;
+  width:54px;height:54px;border-radius:50%;
+  background:var(--primary);color:var(--white);font-size:1.25rem;
+  display:flex;align-items:center;justify-content:center;
+  z-index:1500;box-shadow:var(--shadow-md);transition:all var(--t);position:fixed;
+}
+#cart-fab-wrap{position:fixed;bottom:32px;right:20px;z-index:1500}
+#cart-fab{
+  width:54px;height:54px;border-radius:50%;
+  background:var(--primary);color:var(--white);font-size:1.25rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-md);transition:all var(--t);
+}
+#cart-fab:hover{transform:scale(1.1);background:var(--primary-dark)}
+.fab-bdg{
+  position:absolute;top:-5px;right:-5px;
+  background:var(--accent);color:var(--text);font-size:.58rem;font-weight:800;
+  width:18px;height:18px;border-radius:50%;
+  display:none;align-items:center;justify-content:center;
+}
+.fab-bdg.show{display:flex}
+
+/* ============================================================
+   ADMIN TRIGGER
+   ============================================================ */
+#admin-trigger{
+  position:fixed;bottom:32px;left:20px;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(139,26,26,.12);color:var(--text-light);
+  font-size:.78rem;display:flex;align-items:center;justify-content:center;
+  z-index:1500;opacity:.35;transition:all var(--t);
+}
+#admin-trigger:hover{opacity:1;background:var(--primary);color:var(--white)}
+
+/* ============================================================
+   PASSWORD MODAL
+   ============================================================ */
+#pw-modal{
+  position:fixed;inset:0;z-index:7000;
+  background:rgba(0,0,0,.72);
+  display:none;align-items:center;justify-content:center;padding:1rem;
+}
+#pw-modal.open{display:flex}
+.pw-box{
+  background:#2a1008;border:1px solid rgba(255,255,255,.15);
+  border-radius:var(--radius-lg);padding:2.2rem 2rem;
+  width:100%;max-width:360px;text-align:center;
+  animation:modalPop .3s ease;
+}
+.pw-box h3{font-family:var(--fh);color:var(--accent);font-size:1.5rem;margin-bottom:.4rem}
+.pw-box p{color:rgba(255,255,255,.48);font-size:.82rem;margin-bottom:1.6rem}
+.pw-inp{
+  width:100%;padding:11px 14px;border:1px solid rgba(255,255,255,.15);
+  border-radius:var(--radius-sm);background:rgba(255,255,255,.07);
+  color:var(--white);font-size:.9rem;margin-bottom:1rem;transition:all var(--t);
+}
+.pw-inp:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,163,23,.18)}
+.pw-inp::placeholder{color:rgba(255,255,255,.3)}
+.pw-err{color:#e74c3c;font-size:.78rem;margin-top:-.4rem;margin-bottom:.8rem;display:none}
+.pw-err.show{display:block}
+.pw-actions{display:flex;gap:10px}
+.pw-cancel{flex:1;padding:11px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.6);border-radius:var(--radius-sm);font-size:.85rem;font-weight:600;transition:all var(--t)}
+.pw-cancel:hover{background:rgba(255,255,255,.15);color:var(--white)}
+.pw-submit{flex:1;padding:11px;background:var(--accent);color:var(--text);border-radius:var(--radius-sm);font-size:.85rem;font-weight:700;transition:all var(--t)}
+.pw-submit:hover{background:var(--accent-light)}
+
+/* ============================================================
+   ADMIN PANEL
+   ============================================================ */
+#admin-panel{
+  position:fixed;inset:0;background:#120604;z-index:5000;
+  display:none;flex-direction:column;overflow:hidden;
+}
+#admin-panel.open{display:flex}
+.adm-hdr{
+  background:var(--primary);padding:1rem 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.adm-hdr h2{font-family:var(--fh);color:var(--white);font-size:1.18rem;font-weight:700;display:flex;align-items:center;gap:10px}
+.adm-cls{
+  background:rgba(255,255,255,.18);color:var(--white);
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:.95rem;transition:all var(--t);
+}
+.adm-cls:hover{background:rgba(255,255,255,.35)}
+.adm-tabs{
+  display:flex;background:rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;overflow-x:auto;
+}
+.adm-tab{
+  padding:.85rem 1.5rem;font-size:.82rem;font-weight:600;
+  color:rgba(255,255,255,.45);transition:all var(--t);white-space:nowrap;
+  border-bottom:2px solid transparent;display:flex;align-items:center;gap:7px;
+}
+.adm-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.adm-tab:hover{color:var(--white)}
+.adm-content{flex:1;overflow-y:auto;padding:1.6rem}
+.adm-sec{display:none}
+.adm-sec.active{display:block}
+.adm-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:1.4rem}
+.adm-toolbar h3{color:var(--white);font-family:var(--fh);font-size:1.05rem}
+.btn-adm-add{
+  padding:9px 18px;background:var(--accent);color:var(--text);
+  border-radius:var(--radius-sm);font-size:.82rem;font-weight:700;
+  display:flex;align-items:center;gap:7px;transition:all var(--t);
+}
+.btn-adm-add:hover{background:var(--accent-light)}
+
+.adm-prod-list{display:grid;gap:9px}
+.adm-prod-item{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius-sm);padding:.9rem 1rem;
+  display:flex;align-items:center;gap:12px;
+}
+.adm-pi-img{width:52px;height:52px;border-radius:7px;object-fit:cover;flex-shrink:0}
+.adm-pi-info{flex:1;min-width:0}
+.adm-pi-name{font-size:.88rem;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.adm-pi-meta{font-size:.73rem;color:rgba(255,255,255,.42);margin-top:2px}
+.adm-pi-acts{display:flex;gap:7px;flex-shrink:0}
+.btn-edit-sm{padding:6px 12px;background:rgba(232,163,23,.18);color:var(--accent);border-radius:6px;font-size:.72rem;font-weight:700;transition:all var(--t)}
+.btn-edit-sm:hover{background:var(--accent);color:var(--text)}
+.btn-del-sm{padding:6px 12px;background:rgba(185,43,43,.2);color:#e74c3c;border-radius:6px;font-size:.72rem;font-weight:700;transition:all var(--t)}
+.btn-del-sm:hover{background:#e74c3c;color:var(--white)}
+
+.adm-order-list{display:grid;gap:12px}
+.adm-order-item{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:var(--radius-sm);padding:1.1rem 1.25rem;
+}
+.aoi-hdr{display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;margin-bottom:.6rem}
+.aoi-id{font-size:.68rem;color:rgba(255,255,255,.32);font-family:monospace}
+.aoi-time{font-size:.7rem;color:rgba(255,255,255,.35)}
+.aoi-cust{font-size:.92rem;font-weight:700;color:var(--white)}
+.aoi-phone{font-size:.78rem;color:rgba(255,255,255,.45)}
+.aoi-addr{font-size:.78rem;color:rgba(255,255,255,.42);margin:.35rem 0}
+.aoi-items{font-size:.78rem;color:rgba(255,255,255,.55);line-height:1.7;margin:.35rem 0}
+.aoi-total{font-size:1rem;font-weight:800;color:var(--accent)}
+.aoi-notes{font-size:.76rem;color:rgba(255,255,255,.38);margin-top:.35rem;font-style:italic}
+.no-orders{text-align:center;color:rgba(255,255,255,.3);padding:3rem 1rem;font-size:.88rem}
+
+/* Settings */
+.stg-sec{margin-bottom:2rem}
+.stg-title{
+  font-family:var(--fh);color:var(--accent);font-size:1rem;
+  margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid rgba(255,255,255,.08);
+}
+.hrs-grid{display:grid;gap:8px;margin-bottom:1rem}
+.hrs-row{display:grid;grid-template-columns:110px 1fr;gap:10px;align-items:center}
+.hrs-lbl{font-size:.78rem;color:rgba(255,255,255,.55);font-weight:600}
+.adm-inp{
+  width:100%;padding:9px 13px;border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--radius-sm);background:rgba(255,255,255,.07);
+  color:var(--white);font-size:.84rem;font-family:var(--fb);transition:all var(--t);
+}
+.adm-inp:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(232,163,23,.2)}
+.adm-inp::placeholder{color:rgba(255,255,255,.25)}
+.adm-textarea{min-height:120px;resize:vertical}
+.btn-save-stg{
+  padding:10px 24px;background:var(--accent);color:var(--text);
+  border-radius:var(--radius-sm);font-weight:700;font-size:.85rem;transition:all var(--t);
+}
+.btn-save-stg:hover{background:var(--accent-light)}
+
+/* Admin Product Form Modal */
+#adm-form-modal{
+  position:fixed;inset:0;z-index:6000;
+  background:rgba(0,0,0,.75);display:none;
+  align-items:center;justify-content:center;padding:1rem;
+}
+#adm-form-modal.open{display:flex}
+.adm-modal-box{
+  background:#2a1008;border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--radius-lg);width:100%;max-width:480px;
+  max-height:92vh;overflow-y:auto;box-shadow:0 24px 70px rgba(0,0,0,.6);
+  animation:modalPop .3s ease;
+}
+.adm-mhdr{
+  padding:1.25rem 1.5rem;background:var(--primary);
+  border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.adm-mhdr h3{color:var(--white);font-family:var(--fh);font-size:1.1rem;font-weight:700}
+.adm-mbody{padding:1.5rem}
+.adm-flbl{display:block;font-size:.75rem;font-weight:700;color:rgba(255,255,255,.55);margin-bottom:5px;letter-spacing:.5px}
+.adm-finp{
+  width:100%;padding:10px 13px;border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--radius-sm);background:rgba(255,255,255,.07);
+  color:var(--white);font-size:.88rem;font-family:var(--fb);
+  margin-bottom:1rem;transition:all var(--t);
+}
+.adm-finp:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(232,163,23,.2)}
+.adm-finp::placeholder{color:rgba(255,255,255,.25)}
+select.adm-finp{
+  appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(255,255,255,0.4)' fill='none' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;padding-right:36px;
+}
+select.adm-finp option{background:#2a1008;color:var(--white)}
+.img-preview-wrap{margin-bottom:1rem}
+.img-preview{width:100%;height:140px;border-radius:var(--radius-sm);object-fit:cover;border:1px solid rgba(255,255,255,.1);display:none}
+.img-preview.show{display:block}
+.img-placeholder{
+  width:100%;height:140px;border-radius:var(--radius-sm);
+  border:2px dashed rgba(255,255,255,.18);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;
+  color:rgba(255,255,255,.3);font-size:.8rem;
+}
+.img-placeholder.hidden{display:none}
+.img-placeholder i{font-size:1.8rem}
+.btn-save-prod{
+  width:100%;padding:12px;background:var(--accent);color:var(--text);
+  border-radius:var(--radius-sm);font-weight:800;font-size:.9rem;transition:all var(--t);
+}
+.btn-save-prod:hover{background:var(--accent-light)}
+
+/* Confirm Delete Modal */
+#confirm-modal{
+  position:fixed;inset:0;z-index:7000;
+  background:rgba(0,0,0,.75);display:none;
+  align-items:center;justify-content:center;padding:1rem;
+}
+#confirm-modal.open{display:flex}
+.confirm-box{
+  background:#2a1008;border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--radius-lg);padding:2rem;width:100%;max-width:340px;text-align:center;
+  animation:modalPop .3s ease;
+}
+.confirm-box i{font-size:2.5rem;color:#e74c3c;margin-bottom:1rem;display:block}
+.confirm-box h4{color:var(--white);font-family:var(--fh);font-size:1.2rem;margin-bottom:.6rem}
+.confirm-box p{color:rgba(255,255,255,.48);font-size:.83rem;margin-bottom:1.5rem}
+.confirm-acts{display:flex;gap:10px}
+.btn-cancel-del{flex:1;padding:11px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.65);border-radius:var(--radius-sm);font-size:.85rem;font-weight:600;transition:all var(--t)}
+.btn-cancel-del:hover{background:rgba(255,255,255,.15);color:var(--white)}
+.btn-confirm-del{flex:1;padding:11px;background:#e74c3c;color:var(--white);border-radius:var(--radius-sm);font-size:.85rem;font-weight:700;transition:all var(--t)}
+.btn-confirm-del:hover{background:#c0392b}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.hidden{display:none!important}
+.spin{display:inline-block;animation:lspin .7s linear infinite}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--cream-deeper);border-radius:3px}
+#admin-panel ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12)}
+.adm-modal-box ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12)}
+
+/* Responsive */
+@media(min-width:768px){
+  .about-inner{grid-template-columns:1.1fr .9fr;align-items:center}
+  .about-text-block{text-align:left}
+}
+@media(max-width:480px){
+  .adm-pi-acts{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<!-- Loading Overlay -->
+<div id="loading-overlay">
+  <div class="load-brand">Lois-Peks Kitchen</div>
+  <div class="load-tagline">Loading freshness…</div>
+  <div class="load-spinner"></div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- Navbar -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo">
+      <span class="nav-logo-main">Lois-Peks Kitchen</span>
+      <span class="nav-logo-sub">Snacks · Pastries · Catering</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="#menu">Menu</a>
+      <a class="nav-link" href="#catering">Catering</a>
+      <a class="nav-link" href="#about">About</a>
+      <a class="nav-link" href="#contact">Contact</a>
+    </div>
+    <div class="nav-right">
+      <button class="nav-cart-btn" onclick="openCart()">
+        <i class="fas fa-shopping-basket"></i>
+        <span id="nav-cart-label">Cart</span>
+        <span class="nav-badge" id="nav-badge"></span>
+      </button>
+      <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile Nav -->
+<div id="mobile-nav">
+  <a class="mob-link" href="#menu" onclick="closeMobileNav()">🛒 Menu &amp; Order</a>
+  <a class="mob-link" href="#catering" onclick="closeMobileNav()">🎉 Event Catering</a>
+  <a class="mob-link" href="#about" onclick="closeMobileNav()">✨ About Us</a>
+  <a class="mob-link" href="#contact" onclick="closeMobileNav()">📞 Contact</a>
+</div>
+
+<main>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-pattern"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">&#127829; Freshly Made, Full of Flavour</div>
+    <h1 class="hero-title">
+      Lois-Peks
+      <em>Kitchen</em>
+    </h1>
+    <p class="hero-sub">Snacks, Pastries, Small Chops and Caters for Events — made with love and the finest Nigerian ingredients.</p>
+    <div class="hero-ctas">
+      <a href="#menu" class="btn-gold"><i class="fas fa-shopping-basket"></i> Order Now</a>
+      <a href="#catering" class="btn-ghost"><i class="fas fa-calendar-star"></i> Book Catering</a>
+    </div>
+    <div class="hero-socials">
+      <a href="https://wa.me/+2348165523945?text=Hello+Lois-Peks+Kitchen" target="_blank" class="hero-soc" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+      <a href="https://x.com/chypeks" target="_blank" class="hero-soc" title="X / Twitter"><i class="fab fa-x-twitter"></i></a>
+      <a href="https://www.tiktok.com/@lois_peks_kitchen" target="_blank" class="hero-soc" title="TikTok"><i class="fab fa-tiktok"></i></a>
+      <a href="https://www.facebook.com/lois.peks.kitchen" target="_blank" class="hero-soc" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+    </div>
+  </div>
+  <div class="hero-scroll"><i class="fas fa-chevron-down"></i><span>SCROLL</span></div>
+</section>
+
+<!-- MENU -->
+<section id="menu">
+  <div class="container">
+    <div class="sec-header">
+      <div class="sec-eyebrow">Our Menu</div>
+      <h2 class="sec-title">Fresh From the Kitchen</h2>
+      <p class="sec-sub">Every bite crafted with quality ingredients and authentic Nigerian flavour.</p>
+    </div>
+  </div>
+
+  <div class="cat-filters" id="cat-filters"></div>
+
+  <div class="search-wrap">
+    <i class="fas fa-search search-ic"></i>
+    <input class="search-input" type="search" id="search-input" placeholder="Search products…" autocomplete="off">
+  </div>
+
+  <div class="products-grid" id="products-grid">
+    <div class="no-products"><i class="fas fa-cookie-bite"></i><p>Loading products…</p></div>
+  </div>
+</section>
+
+<!-- CATERING -->
+<section id="catering">
+  <div class="catering-inner">
+    <div class="sec-header">
+      <div class="sec-eyebrow">Event Catering</div>
+      <h2 class="sec-title">We Handle Your Events</h2>
+      <p class="sec-sub">Weddings, birthdays, corporate events — we bring the flavour to your celebration.</p>
+    </div>
+    <div class="cat-form-box">
+      <form id="catering-form" onsubmit="submitCatering(event)">
+        <div class="frow two">
+          <div class="fg">
+            <label class="flbl">Full Name *</label>
+            <input class="finp" type="text" id="cat-name" placeholder="Your full name" required>
+          </div>
+          <div class="fg">
+            <label class="flbl">Phone Number *</label>
+            <input class="finp" type="tel" id="cat-phone" placeholder="e.g. 08012345678" required>
+          </div>
+        </div>
+        <div class="frow two">
+          <div class="fg">
+            <label class="flbl">Event Type *</label>
+            <select class="finp" id="cat-event" required>
+              <option value="">— Select —</option>
+              <option>Wedding</option>
+              <option>Birthday Party</option>
+              <option>Corporate Event</option>
+              <option>Naming Ceremony</option>
+              <option>Graduation Party</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label class="flbl">Event Date *</label>
+            <input class="finp" type="date" id="cat-date" required>
+          </div>
+        </div>
+        <div class="frow two">
+          <div class="fg">
+            <label class="flbl">Number of Guests *</label>
+            <input class="finp" type="number" id="cat-guests" placeholder="e.g. 100" min="1" required>
+          </div>
+          <div class="fg">
+            <label class="flbl">Budget Range</label>
+            <select class="finp" id="cat-budget">
+              <option value="">— Select —</option>
+              <option>Under ₦50,000</option>
+              <option>₦50,000 – ₦100,000</option>
+              <option>₦100,000 – ₦250,000</option>
+              <option>₦250,000 – ₦500,000</option>
+              <option>Above ₦500,000</option>
+            </select>
+          </div>
+        </div>
+        <div class="fg">
+          <label class="flbl">Special Requests / Notes</label>
+          <textarea class="finp" id="cat-requests" placeholder="Tell us about your event, preferred snacks/items, venue, etc." rows="4"></textarea>
+        </div>
+        <div class="cat-actions">
+          <button class="btn-submit" type="submit" id="cat-submit-btn">
+            <i class="fas fa-paper-plane"></i> Send Inquiry
+          </button>
+          <button class="btn-wa" type="button" onclick="cateringWhatsApp()">
+            <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div>
+      <div class="sec-header" style="text-align:left">
+        <div class="sec-eyebrow" style="justify-content:flex-start">Our Story</div>
+        <h2 class="sec-title" style="text-align:left">About Lois-Peks Kitchen</h2>
+      </div>
+      <div class="about-text-block" id="about-text-content"></div>
+    </div>
+    <div class="about-feats">
+      <div class="about-feat">
+        <span class="af-icon">🥘</span>
+        <div class="af-title">Quality Ingredients</div>
+        <div class="af-text">We source only the finest, freshest ingredients for every product.</div>
+      </div>
+      <div class="about-feat">
+        <span class="af-icon">🔥</span>
+        <div class="af-title">Made Fresh Daily</div>
+        <div class="af-text">Everything is prepared fresh — no preservatives, just pure goodness.</div>
+      </div>
+      <div class="about-feat">
+        <span class="af-icon">🇳🇬</span>
+        <div class="af-title">Nigerian Flavours</div>
+        <div class="af-text">Authentic recipes that celebrate the richness of Nigerian cuisine.</div>
+      </div>
+      <div class="about-feat">
+        <span class="af-icon">🎉</span>
+        <div class="af-title">Event Experts</div>
+        <div class="af-text">Years of experience making events delicious and memorable.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="cc">
+      <h4>Lois-Peks Kitchen</h4>
+      <a href="https://wa.me/+2348165523945?text=Hello+Lois-Peks+Kitchen" class="cc-link" target="_blank"><i class="fab fa-whatsapp"></i> +234 816 552 3945</a>
+      <a href="tel:07018398013" class="cc-link"><i class="fas fa-phone"></i> 0701 839 8013</a>
+      <a href="/cdn-cgi/l/email-protection#bed2d1d7cdcedbd5cdd5d7caddd6dbd0fed9d3dfd7d290ddd1d3" class="cc-link"><i class="fas fa-envelope"></i> <span class="__cf_email__" data-cfemail="026e6d6b7172676971696b76616a676c42656f636b6e2c616d6f">[email&#160;protected]</span></a>
+    </div>
+    <div class="cc">
+      <h4>Follow Us</h4>
+      <div class="soc-pills">
+        <a href="https://wa.me/+2348165523945?text=Hello+Lois-Peks+Kitchen" class="soc-pill" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="https://x.com/chypeks" class="soc-pill" target="_blank"><i class="fab fa-x-twitter"></i> @chypeks</a>
+        <a href="https://www.tiktok.com/@lois_peks_kitchen" class="soc-pill" target="_blank"><i class="fab fa-tiktok"></i> TikTok</a>
+        <a href="https://www.facebook.com/lois.peks.kitchen" class="soc-pill" target="_blank"><i class="fab fa-facebook-f"></i> Facebook</a>
+      </div>
+    </div>
+    <div class="cc">
+      <h4>Business Hours</h4>
+      <div class="hours-list" id="footer-hours"></div>
+    </div>
+  </div>
+  <div class="footer-btm">
+    <p>© <span id="yr"></span> Lois-Peks Kitchen. Made with ❤️ in Nigeria. &nbsp;|&nbsp; <a href="/cdn-cgi/l/email-protection#2f4340465c5f4a445c44465b4c474a416f48424e4643014c4042"><span class="__cf_email__" data-cfemail="d6bab9bfa5a6b3bda5bdbfa2b5beb3b896b1bbb7bfbaf8b5b9bb">[email&#160;protected]</span></a></p>
+  </div>
+</section>
+
+</main>
+
+<!-- Cart Sidebar -->
+<div id="cart-overlay" onclick="closeCart()"></div>
+<div id="cart-sidebar">
+  <div class="cart-hdr">
+    <h3><i class="fas fa-shopping-basket"></i> &nbsp;Your Cart</h3>
+    <button class="cart-cls" onclick="closeCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-ftr" id="cart-footer" style="display:none">
+    <div class="cart-tot">
+      <span class="cart-tot-lbl">Total</span>
+      <span class="cart-tot-amt" id="cart-total"></span>
+    </div>
+    <button class="chk-btn" onclick="openCheckout()">
+      <i class="fas fa-lock"></i> Checkout
+    </button>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkout-modal">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3><i class="fas fa-receipt"></i> &nbsp;Complete Your Order</h3>
+      <button class="modal-cls" onclick="closeCheckout()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="checkout-body"></div>
+  </div>
+</div>
+
+<!-- Password Modal -->
+<div id="pw-modal">
+  <div class="pw-box">
+    <h3><i class="fas fa-shield-alt"></i>&ensp;Admin Access</h3>
+    <p>Enter the admin password to continue</p>
+    <input type="password" class="pw-inp" id="pw-input" placeholder="Enter password…" onkeydown="if(event.key==='Enter')verifyPassword()">
+    <div class="pw-err" id="pw-error">Incorrect password. Try again.</div>
+    <div class="pw-actions">
+      <button class="pw-cancel" onclick="closePwModal()">Cancel</button>
+      <button class="pw-submit" onclick="verifyPassword()">Login</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Panel -->
+<div id="admin-panel">
+  <div class="adm-hdr">
+    <h2><i class="fas fa-utensils"></i> Admin Panel — Lois-Peks Kitchen</h2>
+    <button class="adm-cls" onclick="closeAdmin()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="adm-tabs" id="adm-tabs">
+    <button class="adm-tab active" onclick="switchAdmTab('products',this)"><i class="fas fa-box"></i> Products</button>
+    <button class="adm-tab" onclick="switchAdmTab('orders',this)"><i class="fas fa-list-alt"></i> Orders</button>
+    <button class="adm-tab" onclick="switchAdmTab('settings',this)"><i class="fas fa-cog"></i> Settings</button>
+  </div>
+  <div class="adm-content">
+    <!-- Products Tab -->
+    <div class="adm-sec active" id="adm-products">
+      <div class="adm-toolbar">
+        <h3>Products (<span id="prod-count">0</span>)</h3>
+        <button class="btn-adm-add" onclick="openProductForm()"><i class="fas fa-plus"></i> Add Product</button>
+      </div>
+      <div class="adm-prod-list" id="adm-prod-list"></div>
+    </div>
+    <!-- Orders Tab -->
+    <div class="adm-sec" id="adm-orders">
+      <div class="adm-toolbar">
+        <h3>Orders (<span id="orders-count">0</span>)</h3>
+        <button class="btn-adm-add" style="background:rgba(185,43,43,.3);color:#e74c3c" onclick="clearOrders()"><i class="fas fa-trash"></i> Clear All</button>
+      </div>
+      <div class="adm-order-list" id="adm-order-list"></div>
+    </div>
+    <!-- Settings Tab -->
+    <div class="adm-sec" id="adm-settings">
+      <div class="stg-sec">
+        <div class="stg-title"><i class="fas fa-clock"></i> &ensp;Business Hours</div>
+        <div class="hrs-grid" id="hrs-grid"></div>
+        <button class="btn-save-stg" onclick="saveSettings()"><i class="fas fa-save"></i> Save Hours</button>
+      </div>
+      <div class="stg-sec">
+        <div class="stg-title"><i class="fas fa-align-left"></i> &ensp;About Text</div>
+        <label class="adm-flbl">Edit the About section text (supports line breaks)</label>
+        <textarea class="adm-inp adm-textarea" id="about-edit" placeholder="About Lois-Peks Kitchen…"></textarea>
+        <br><br>
+        <button class="btn-save-stg" onclick="saveAbout()"><i class="fas fa-save"></i> Save About Text</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Product Form Modal -->
+<div id="adm-form-modal">
+  <div class="adm-modal-box">
+    <div class="adm-mhdr">
+      <h3 id="adm-form-title">Add New Product</h3>
+      <button class="adm-cls" onclick="closeProductForm()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="adm-mbody">
+      <input type="hidden" id="pf-id">
+      <label class="adm-flbl">Product Name *</label>
+      <input class="adm-finp" type="text" id="pf-name" placeholder="e.g. Classic Chinchin">
+      <label class="adm-flbl">Price (₦) *</label>
+      <input class="adm-finp" type="number" id="pf-price" placeholder="e.g. 500" min="0">
+      <label class="adm-flbl">Category *</label>
+      <select class="adm-finp" id="pf-category">
+        <option value="">— Select Category —</option>
+      </select>
+      <label class="adm-flbl">Product Image (optional)</label>
+      <div class="img-preview-wrap">
+        <div class="img-placeholder" id="img-placeholder"><i class="fas fa-image"></i><span>Click below to upload image</span></div>
+        <img class="img-preview" id="img-preview" src="" alt="Preview">
+      </div>
+      <input type="file" id="pf-image" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+      <button type="button" onclick="document.getElementById('pf-image').click()" style="width:100%;padding:9px;background:rgba(255,255,255,.07);border:1px dashed rgba(255,255,255,.2);border-radius:8px;color:rgba(255,255,255,.5);font-size:.82rem;margin-bottom:1rem;transition:all .3s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='rgba(255,255,255,.2)'">
+        <i class="fas fa-upload"></i> &ensp;Upload Image
+      </button>
+      <button class="btn-save-prod" onclick="saveProduct()">
+        <i class="fas fa-save"></i> &ensp;Save Product
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div id="confirm-modal">
+  <div class="confirm-box">
+    <i class="fas fa-trash-alt"></i>
+    <h4>Delete Product?</h4>
+    <p>This action cannot be undone. The product will be permanently removed.</p>
+    <div class="confirm-acts">
+      <button class="btn-cancel-del" onclick="closeConfirmModal()">Cancel</button>
+      <button class="btn-confirm-del" id="confirm-del-btn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Floating Call Button -->
+<a href="tel:07018398013" id="call-fab" title="Call Us"><i class="fas fa-phone"></i></a>
+
+<!-- Floating Cart Button -->
+<div id="cart-fab-wrap" style="position:fixed;bottom:32px;right:20px;z-index:1500">
+  <button id="cart-fab" onclick="openCart()" title="View Cart" style="position:relative">
+    <i class="fas fa-shopping-basket"></i>
+    <span class="fab-bdg" id="fab-badge"></span>
+  </button>
+</div>
+
+<!-- Admin Trigger -->
+<button id="admin-trigger" onclick="openPwModal()" title="Admin Panel">
+  <i class="fas fa-cog"></i>
+</button>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+/* ============================================================
+   ⚙️  CONFIGURATION — Replace these with your real values!
+   ============================================================
+   1. Sign up at https://www.emailjs.com/
+   2. Create a Gmail (or other) service → copy the Service ID
+   3. Create two Email Templates:
+      - Order template with variables: {{customer_name}}, {{customer_phone}},
+        {{delivery_address}}, {{order_items}}, {{total_amount}}, {{notes}}, {{order_time}}
+      - Catering template with variables: {{customer_name}}, {{customer_phone}},
+        {{event_type}}, {{event_date}}, {{num_guests}}, {{budget}}, {{special_requests}}, {{inquiry_time}}
+   4. Copy your Public Key from Account → API Keys
+   ============================================================ */
+const CFG = {
+  adminPassword: 'LoisPeks@5523',
+  whatsapp: '+2348165523945',
+  phone: '07018398013',
+  email: 'loispekskitchen@gmail.com',
+  emailjs: {
+    publicKey:          'YOUR_EMAILJS_PUBLIC_KEY',   // ← replace
+    serviceId:          'YOUR_SERVICE_ID',            // ← replace
+    orderTemplateId:    'YOUR_ORDER_TEMPLATE_ID',    // ← replace
+    cateringTemplateId: 'YOUR_CATERING_TEMPLATE_ID', // ← replace
+  }
+};
+
+const CATS = ['All','Chinchin','Peanuts','Plantain Chips','Small Chops','Other Snacks','Other Pastries','Natural Drinks'];
+
+/* ============================================================
+   DEFAULT DATA
+   ============================================================ */
+const CAT_COLORS = {
+  'Chinchin':       { bg:'#6B3A1F', emoji:'🥨' },
+  'Peanuts':        { bg:'#8B5E1A', emoji:'🥜' },
+  'Plantain Chips': { bg:'#7A6010', emoji:'🍌' },
+  'Small Chops':    { bg:'#8B1A1A', emoji:'🍢' },
+  'Other Snacks':   { bg:'#5A3020', emoji:'🥧' },
+  'Other Pastries': { bg:'#8B4513', emoji:'🧁' },
+  'Natural Drinks': { bg:'#7A1A3A', emoji:'🧃' },
+};
+
+function makePlaceholder(name, cat) {
+  const c = CAT_COLORS[cat] || { bg:'#8B1A1A', emoji:'🍽️' };
+  const short = name.length > 22 ? name.slice(0,20)+'…' : name;
+  const s = `<svg xmlns='http://www.w3.org/2000/svg' width='320' height='200'>
+    <defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'>
+      <stop offset='0%' style='stop-color:${c.bg};stop-opacity:1'/>
+      <stop offset='100%' style='stop-color:${c.bg}AA;stop-opacity:1'/>
+    </linearGradient></defs>
+    <rect width='320' height='200' fill='url(#g)'/>
+    <text x='160' y='92' font-size='62' text-anchor='middle' dominant-baseline='middle'>${c.emoji}</text>
+    <rect y='150' width='320' height='50' fill='rgba(0,0,0,0.42)'/>
+    <text x='160' y='178' font-family='Georgia,serif' font-size='13.5' fill='#FDF5E6' text-anchor='middle' dominant-baseline='middle'>${short}</text>
+  </svg>`;
+  return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s);
+}
+function imgFallback(el) {
+  const name = el.getAttribute('data-name') || '';
+  const cat  = el.getAttribute('data-cat')  || '';
+  el.onerror = null;
+  el.src = makePlaceholder(name, cat);
+}
+
+
+const DEFAULT_PRODUCTS = [
+  { id:'p01', name:'Classic Chinchin',      price:500,  category:'Chinchin',       image:null },
+  { id:'p02', name:'Coconut Chinchin',       price:700,  category:'Chinchin',       image:null },
+  { id:'p03', name:'Roasted Peanuts',        price:300,  category:'Peanuts',        image:null },
+  { id:'p04', name:'Honey Coated Peanuts',   price:500,  category:'Peanuts',        image:null },
+  { id:'p05', name:'Sweet Plantain Chips',   price:400,  category:'Plantain Chips', image:null },
+  { id:'p06', name:'Spicy Plantain Chips',   price:450,  category:'Plantain Chips', image:null },
+  { id:'p07', name:'Party Small Chops Box',  price:3500, category:'Small Chops',    image:null },
+  { id:'p08', name:'Mini Small Chops',       price:2000, category:'Small Chops',    image:null },
+  { id:'p09', name:'Meat Pie',               price:500,  category:'Other Snacks',   image:null },
+  { id:'p10', name:'Sausage Roll',           price:400,  category:'Other Snacks',   image:null },
+  { id:'p11', name:'Cake Slice',             price:1500, category:'Other Pastries', image:null },
+  { id:'p12', name:'Doughnut Pack',          price:800,  category:'Other Pastries', image:null },
+  { id:'p13', name:'Zobo Drink',             price:500,  category:'Natural Drinks', image:null },
+  { id:'p14', name:'Tiger Nut Drink',        price:600,  category:'Natural Drinks', image:null },
+];
+
+const DEFAULT_SETTINGS = {
+  hours: {
+    'Monday – Friday': '8:00 AM – 8:00 PM',
+    'Saturday':        '9:00 AM – 9:00 PM',
+    'Sunday':          '10:00 AM – 6:00 PM',
+  },
+  aboutText: 'Welcome to Lois-Peks Kitchen, your favourite destination for freshly made Nigerian snacks, pastries, and small chops.\n\nWe take pride in crafting every bite with quality ingredients, traditional Nigerian flavours, and loads of love. Whether you\'re craving crispy Chinchin, flavourful Plantain Chips, party-perfect Small Chops, or need professional catering for your event — we\'ve got you covered.\n\nYour satisfaction is our greatest joy. We look forward to serving you!'
+};
+
+/* ============================================================
+   APP STATE
+   ============================================================ */
+let products = [];
+let orders   = [];
+let settings = JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+let cart     = JSON.parse(localStorage.getItem('lp_cart') || '[]');
+let filterCat = 'All';
+let filterQ   = '';
+let editingProductId = null;
+let deleteTargetId   = null;
+
+/* ============================================================
+   CLOUD STORAGE
+   ============================================================ */
+/* Detect if running on Netlify (functions available) */
+const IS_NETLIFY = (
+  window.location.hostname !== 'localhost' &&
+  !window.location.hostname.includes('127.0.0.1') &&
+  !window.location.protocol.startsWith('file') &&
+  !window.location.hostname.includes('claude.ai') &&
+  !window.location.hostname.includes('anthropic')
+);
+
+function fetchWithTimeout(url, opts = {}, ms = 4000) {
+  const ctrl = new AbortController();
+  const id = setTimeout(() => ctrl.abort(), ms);
+  return fetch(url, { ...opts, signal: ctrl.signal })
+    .finally(() => clearTimeout(id));
+}
+
+class CloudStorage {
+  async get(key) {
+    if (!IS_NETLIFY) return null;
+    try {
+      const res = await fetchWithTimeout(
+        `/.netlify/functions/getBlob?key=${encodeURIComponent(key)}`
+      );
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.value;
+    } catch {
+      return null;
+    }
+  }
+  async put(key, value) {
+    if (!IS_NETLIFY) { lsSet('lp_' + key, value); return true; }
+    try {
+      const res = await fetchWithTimeout('/.netlify/functions/putBlob', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key, value })
+      });
+      lsSet('lp_' + key, value);
+      return res.ok;
+    } catch {
+      lsSet('lp_' + key, value);
+      return false;
+    }
+  }
+  async del(key) {
+    if (!IS_NETLIFY) return true;
+    try {
+      const res = await fetchWithTimeout(
+        `/.netlify/functions/deleteBlob?key=${encodeURIComponent(key)}`
+      );
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+}
+const cloud = new CloudStorage();
+
+/* ============================================================
+   INIT
+   ============================================================ */
+async function init() {
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Init EmailJS if key is set
+  try {
+    if (CFG.emailjs.publicKey && CFG.emailjs.publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+      emailjs.init(CFG.emailjs.publicKey);
+    }
+  } catch(e) {}
+
+  // Load data — cloud first, fallback to localStorage
+  await loadData();
+
+  // Render UI
+  renderCategoryFilters();
+  renderProducts();
+  renderFooterHours();
+  renderAbout();
+  bindSearch();
+  renderCartBadge();
+
+  // Hide loader
+  setTimeout(() => {
+    document.getElementById('loading-overlay').classList.add('hidden');
+  }, 600);
+}
+
+async function loadData() {
+  // --- Load instantly from localStorage / defaults (never blocks UI) ---
+  const cachedProds = lsGet('lp_products');
+  products = (cachedProds && cachedProds.length > 0)
+    ? cachedProds
+    : JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
+
+  orders = lsGet('lp_orders') || [];
+
+  const cachedSettings = lsGet('lp_settings');
+  settings = cachedSettings
+    ? { ...DEFAULT_SETTINGS, ...cachedSettings }
+    : JSON.parse(JSON.stringify(DEFAULT_SETTINGS));
+
+  // --- Then try cloud in background (updates UI if data differs) ---
+  if (IS_NETLIFY) {
+    cloud.get('products').then(cp => {
+      if (cp && Array.isArray(cp) && cp.length > 0) {
+        products = cp;
+        lsSet('lp_products', products);
+        renderProducts();
+      } else if (!cachedProds || cachedProds.length === 0) {
+        // First deploy — seed cloud with defaults
+        cloud.put('products', products);
+      }
+    }).catch(() => {});
+
+    cloud.get('orders').then(co => {
+      if (co && Array.isArray(co)) {
+        orders = co;
+        lsSet('lp_orders', orders);
+      }
+    }).catch(() => {});
+
+    cloud.get('settings').then(cs => {
+      if (cs) {
+        settings = { ...DEFAULT_SETTINGS, ...cs };
+        lsSet('lp_settings', settings);
+        renderFooterHours();
+        renderAbout();
+      }
+    }).catch(() => {});
+  }
+}
+
+/* ============================================================
+   RENDER — CATEGORY FILTERS
+   ============================================================ */
+function renderCategoryFilters() {
+  const el = document.getElementById('cat-filters');
+  el.innerHTML = CATS.map(c =>
+    `<button class="cat-btn${c === filterCat ? ' active' : ''}" onclick="setCategory('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setCategory(cat) {
+  filterCat = cat;
+  renderCategoryFilters();
+  renderProducts();
+}
+
+/* ============================================================
+   RENDER — PRODUCTS
+   ============================================================ */
+function renderProducts() {
+  const grid = document.getElementById('products-grid');
+  let list = products;
+  if (filterCat !== 'All') list = list.filter(p => p.category === filterCat);
+  if (filterQ) list = list.filter(p => p.name.toLowerCase().includes(filterQ.toLowerCase()));
+
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="no-products"><i class="fas fa-cookie-bite"></i><p>${filterQ ? 'No products match your search.' : 'No products in this category yet.'}</p></div>`;
+    return;
+  }
+
+  grid.innerHTML = list.map(p => {
+    const img = p.image || makePlaceholder(p.name, p.category);
+    return `<div class="product-card">
+      <div class="pc-img-wrap">
+        <img class="pc-img" src="${img}" alt="${esc(p.name)}" loading="lazy" data-name="${esc(p.name)}" data-cat="${esc(p.category)}" onerror="imgFallback(this)">
+        <span class="pc-badge">${esc(p.category)}</span>
+      </div>
+      <div class="pc-body">
+        <div class="pc-name">${esc(p.name)}</div>
+        <div class="pc-price">${fmt(p.price)}</div>
+        <button class="add-btn" onclick="addToCart('${p.id}')">
+          <i class="fas fa-plus"></i> Add to Cart
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function bindSearch() {
+  document.getElementById('search-input').addEventListener('input', e => {
+    filterQ = e.target.value;
+    renderProducts();
+  });
+}
+
+/* ============================================================
+   RENDER — FOOTER HOURS & ABOUT
+   ============================================================ */
+function renderFooterHours() {
+  const el = document.getElementById('footer-hours');
+  if (!settings.hours) return;
+  el.innerHTML = Object.entries(settings.hours).map(([day, hrs]) =>
+    `<div class="hours-row"><span class="hours-day">${esc(day)}</span><span>${esc(hrs)}</span></div>`
+  ).join('');
+}
+
+function renderAbout() {
+  const el = document.getElementById('about-text-content');
+  const text = settings.aboutText || DEFAULT_SETTINGS.aboutText;
+  el.innerHTML = text.split('\n\n').map(p => `<p>${esc(p)}</p>`).join('');
+}
+
+/* ============================================================
+   CART LOGIC
+   ============================================================ */
+function addToCart(pid) {
+  const p = products.find(x => x.id === pid);
+  if (!p) return;
+  const existing = cart.find(x => x.id === pid);
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ id: p.id, name: p.name, price: p.price, image: p.image, category: p.category, qty: 1 });
+  }
+  saveCart();
+  renderCartBadge();
+  showToast(`${p.name} added to cart`, 'success');
+}
+
+function removeFromCart(pid) {
+  cart = cart.filter(x => x.id !== pid);
+  saveCart();
+  renderCartBadge();
+  renderCartSidebar();
+}
+
+function updateQty(pid, delta) {
+  const item = cart.find(x => x.id === pid);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  saveCart();
+  renderCartSidebar();
+  renderCartBadge();
+}
+
+function cartTotal() {
+  return cart.reduce((s, i) => s + i.price * i.qty, 0);
+}
+
+function cartCount() {
+  return cart.reduce((s, i) => s + i.qty, 0);
+}
+
+function saveCart() {
+  lsSet('lp_cart', cart);
+}
+
+function renderCartBadge() {
+  const n = cartCount();
+  const nb = document.getElementById('nav-badge');
+  const fb = document.getElementById('fab-badge');
+  const nl = document.getElementById('nav-cart-label');
+  nb.textContent = fb.textContent = n;
+  if (n > 0) { nb.classList.add('show'); fb.classList.add('show'); }
+  else { nb.classList.remove('show'); fb.classList.remove('show'); }
+  nl.textContent = n > 0 ? `Cart (${n})` : 'Cart';
+}
+
+function renderCartSidebar() {
+  const itemsEl = document.getElementById('cart-items');
+  const ftrEl   = document.getElementById('cart-footer');
+  const totEl   = document.getElementById('cart-total');
+
+  if (cart.length === 0) {
+    itemsEl.innerHTML = `<div class="cart-empty"><i class="fas fa-shopping-basket"></i><p>Your cart is empty</p><p style="font-size:.8rem;margin-top:.5rem">Add some delicious items!</p></div>`;
+    ftrEl.style.display = 'none';
+    return;
+  }
+
+  itemsEl.innerHTML = cart.map(item => {
+    const img = item.image || makePlaceholder(item.name, item.category);
+    return `<div class="cart-item">
+      <img class="ci-img" src="${img}" alt="${esc(item.name)}" data-name="${esc(item.name)}" data-cat="${esc(item.category)}" onerror="imgFallback(this)">
+      <div class="ci-info">
+        <div class="ci-name">${esc(item.name)}</div>
+        <div class="ci-price">${fmt(item.price * item.qty)}</div>
+        <div class="ci-ctrl">
+          <button class="qty-btn" onclick="updateQty('${item.id}',-1)">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="updateQty('${item.id}',1)">+</button>
+        </div>
+      </div>
+      <button class="ci-rm" onclick="removeFromCart('${item.id}')" title="Remove"><i class="fas fa-trash"></i></button>
+    </div>`;
+  }).join('');
+
+  ftrEl.style.display = 'block';
+  totEl.textContent = fmt(cartTotal());
+}
+
+function openCart() {
+  renderCartSidebar();
+  document.getElementById('cart-overlay').classList.add('open');
+  document.getElementById('cart-sidebar').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCart() {
+  document.getElementById('cart-overlay').classList.remove('open');
+  document.getElementById('cart-sidebar').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ============================================================
+   CHECKOUT
+   ============================================================ */
+function openCheckout() {
+  if (cart.length === 0) { showToast('Your cart is empty!', 'error'); return; }
+  closeCart();
+  renderCheckoutBody();
+  document.getElementById('checkout-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCheckout() {
+  document.getElementById('checkout-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderCheckoutBody() {
+  const el = document.getElementById('checkout-body');
+  const itemsHtml = cart.map(i =>
+    `<div class="osb-item"><span>${esc(i.name)} × ${i.qty}</span><span>${fmt(i.price * i.qty)}</span></div>`
+  ).join('');
+
+  el.innerHTML = `
+    <div class="order-summary-box">
+      <div class="osb-title">Order Summary</div>
+      ${itemsHtml}
+      <div class="osb-total"><span>Total</span><span>${fmt(cartTotal())}</span></div>
+    </div>
+    <div class="fg">
+      <label class="flbl">Full Name *</label>
+      <input class="finp" type="text" id="o-name" placeholder="Your full name" required>
+    </div>
+    <div class="fg">
+      <label class="flbl">Phone Number *</label>
+      <input class="finp" type="tel" id="o-phone" placeholder="e.g. 08012345678" required>
+    </div>
+    <div class="fg">
+      <label class="flbl">Delivery Address *</label>
+      <textarea class="finp" id="o-address" placeholder="Full delivery address…" rows="2" required></textarea>
+    </div>
+    <div class="fg">
+      <label class="flbl">Special Notes (optional)</label>
+      <textarea class="finp" id="o-notes" placeholder="Any special requests?" rows="2"></textarea>
+    </div>
+    <button class="place-btn" id="place-btn" onclick="placeOrder()">
+      <i class="fas fa-check-circle"></i> Place Order
+    </button>`;
+}
+
+async function placeOrder() {
+  const name    = document.getElementById('o-name')?.value.trim();
+  const phone   = document.getElementById('o-phone')?.value.trim();
+  const address = document.getElementById('o-address')?.value.trim();
+  const notes   = document.getElementById('o-notes')?.value.trim();
+
+  if (!name || !phone || !address) {
+    showToast('Please fill in all required fields.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('place-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fas fa-spinner spin"></i> Processing…`;
+
+  const orderId   = genId();
+  const timestamp = new Date().toLocaleString('en-NG', { dateStyle:'long', timeStyle:'short' });
+  const itemsList = cart.map(i => `${i.name} × ${i.qty} = ${fmt(i.price * i.qty)}`).join('\n');
+  const total     = cartTotal();
+
+  const order = {
+    id: orderId, name, phone, address, notes, total,
+    items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+    timestamp
+  };
+
+  // Save order to cloud
+  orders.unshift(order);
+  await cloud.put('orders', orders);
+  lsSet('lp_orders', orders);
+
+  // Send email
+  try {
+    if (CFG.emailjs.publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+      await emailjs.send(CFG.emailjs.serviceId, CFG.emailjs.orderTemplateId, {
+        to_email:         CFG.email,
+        order_id:         orderId,
+        customer_name:    name,
+        customer_phone:   phone,
+        delivery_address: address,
+        order_items:      itemsList,
+        total_amount:     fmt(total),
+        notes:            notes || 'None',
+        order_time:       timestamp,
+      });
+    }
+  } catch (e) {
+    console.warn('EmailJS error:', e);
+  }
+
+  // Build WhatsApp message
+  const waMsg = `🛒 *New Order — Lois-Peks Kitchen*\n\n*Order ID:* ${orderId}\n\n*Customer:*\nName: ${name}\nPhone: ${phone}\nAddress: ${address}\n\n*Items:*\n${itemsList}\n\n*Total: ${fmt(total)}*${notes ? '\n\n*Notes:* ' + notes : ''}\n\n_Placed: ${timestamp}_`;
+
+  // Clear cart
+  cart = [];
+  saveCart();
+  renderCartBadge();
+
+  // Show success screen
+  document.getElementById('checkout-body').innerHTML = `
+    <div class="order-success">
+      <div class="success-ring"><i class="fas fa-check"></i></div>
+      <h4>Order Received! 🎉</h4>
+      <p>Thank you, <strong>${esc(name)}</strong>! Your order has been received. We'll reach out shortly to confirm and arrange delivery.</p>
+      <a class="wa-confirm-btn" href="https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(waMsg)}" target="_blank" onclick="setTimeout(closeCheckout,800)">
+        <i class="fab fa-whatsapp"></i> View Order on WhatsApp
+      </a>
+    </div>`;
+
+  // Open WhatsApp automatically
+  setTimeout(() => {
+    window.open(`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(waMsg)}`, '_blank');
+  }, 800);
+
+  showToast('Order placed successfully!', 'success');
+}
+
+/* ============================================================
+   CATERING FORM
+   ============================================================ */
+async function submitCatering(e) {
+  e.preventDefault();
+  const name     = document.getElementById('cat-name').value.trim();
+  const phone    = document.getElementById('cat-phone').value.trim();
+  const event    = document.getElementById('cat-event').value;
+  const date     = document.getElementById('cat-date').value;
+  const guests   = document.getElementById('cat-guests').value;
+  const budget   = document.getElementById('cat-budget').value;
+  const requests = document.getElementById('cat-requests').value.trim();
+
+  if (!name || !phone || !event || !date || !guests) {
+    showToast('Please fill in all required fields.', 'error');
+    return;
+  }
+
+  const btn = document.getElementById('cat-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = `<i class="fas fa-spinner spin"></i> Sending…`;
+
+  const ts = new Date().toLocaleString('en-NG', { dateStyle:'long', timeStyle:'short' });
+
+  try {
+    if (CFG.emailjs.publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+      await emailjs.send(CFG.emailjs.serviceId, CFG.emailjs.cateringTemplateId, {
+        to_email:         CFG.email,
+        customer_name:    name,
+        customer_phone:   phone,
+        event_type:       event,
+        event_date:       date,
+        num_guests:       guests,
+        budget:           budget || 'Not specified',
+        special_requests: requests || 'None',
+        inquiry_time:     ts,
+      });
+    }
+    showToast("Catering inquiry sent! We\u2019ll contact you soon.", 'success');
+    document.getElementById('catering-form').reset();
+  } catch (err) {
+    console.warn('EmailJS error:', err);
+    showToast('Sent! (Email notification pending setup)', 'info');
+    document.getElementById('catering-form').reset();
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = `<i class="fas fa-paper-plane"></i> Send Inquiry`;
+}
+
+function cateringWhatsApp() {
+  const name     = document.getElementById('cat-name').value || '(not filled)';
+  const phone    = document.getElementById('cat-phone').value || '(not filled)';
+  const event    = document.getElementById('cat-event').value || '(not selected)';
+  const date     = document.getElementById('cat-date').value || '(not filled)';
+  const guests   = document.getElementById('cat-guests').value || '(not filled)';
+  const budget   = document.getElementById('cat-budget').value || 'Not specified';
+  const requests = document.getElementById('cat-requests').value || 'None';
+
+  const msg = `🎉 *Catering Inquiry — Lois-Peks Kitchen*\n\n*Name:* ${name}\n*Phone:* ${phone}\n*Event Type:* ${event}\n*Date:* ${date}\n*Guests:* ${guests}\n*Budget:* ${budget}\n\n*Special Requests:*\n${requests}`;
+  window.open(`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+/* ============================================================
+   MOBILE NAV
+   ============================================================ */
+function toggleMobileNav() {
+  const h = document.getElementById('hamburger');
+  const m = document.getElementById('mobile-nav');
+  h.classList.toggle('open');
+  m.classList.toggle('open');
+}
+function closeMobileNav() {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-nav').classList.remove('open');
+}
+
+/* ============================================================
+   ADMIN — PASSWORD
+   ============================================================ */
+function openPwModal() {
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-error').classList.remove('show');
+  document.getElementById('pw-modal').classList.add('open');
+  setTimeout(() => document.getElementById('pw-input').focus(), 100);
+}
+function closePwModal() {
+  document.getElementById('pw-modal').classList.remove('open');
+}
+function verifyPassword() {
+  const val = document.getElementById('pw-input').value;
+  if (val === CFG.adminPassword) {
+    closePwModal();
+    openAdmin();
+  } else {
+    document.getElementById('pw-error').classList.add('show');
+    document.getElementById('pw-input').value = '';
+    document.getElementById('pw-input').focus();
+  }
+}
+
+/* ============================================================
+   ADMIN PANEL
+   ============================================================ */
+function openAdmin() {
+  renderAdminProducts();
+  renderAdminOrders();
+  renderAdminSettings();
+  document.getElementById('admin-panel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAdmin() {
+  document.getElementById('admin-panel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function switchAdmTab(tab, btn) {
+  document.querySelectorAll('.adm-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.adm-sec').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(`adm-${tab}`).classList.add('active');
+}
+
+/* Admin — Products */
+function renderAdminProducts() {
+  const list = document.getElementById('adm-prod-list');
+  document.getElementById('prod-count').textContent = products.length;
+  if (products.length === 0) {
+    list.innerHTML = `<p style="color:rgba(255,255,255,.4);font-size:.85rem;text-align:center;padding:2rem">No products yet. Add your first product!</p>`;
+    return;
+  }
+  list.innerHTML = products.map(p => {
+    const img = p.image || makePlaceholder(p.name, p.category);
+    return `<div class="adm-prod-item">
+      <img class="adm-pi-img" src="${img}" alt="${esc(p.name)}" data-name="${esc(p.name)}" data-cat="${esc(p.category)}" onerror="imgFallback(this)">
+      <div class="adm-pi-info">
+        <div class="adm-pi-name">${esc(p.name)}</div>
+        <div class="adm-pi-meta">${esc(p.category)} · ${fmt(p.price)}</div>
+      </div>
+      <div class="adm-pi-acts">
+        <button class="btn-edit-sm" onclick="openProductForm('${p.id}')"><i class="fas fa-pen"></i> Edit</button>
+        <button class="btn-del-sm" onclick="openConfirmDelete('${p.id}')"><i class="fas fa-trash"></i> Del</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* Admin — Orders */
+function renderAdminOrders() {
+  const list = document.getElementById('adm-order-list');
+  document.getElementById('orders-count').textContent = orders.length;
+  if (orders.length === 0) {
+    list.innerHTML = `<div class="no-orders"><i class="fas fa-inbox" style="font-size:2rem;margin-bottom:.8rem;display:block"></i>No orders yet.</div>`;
+    return;
+  }
+  list.innerHTML = orders.map(o => {
+    const itemsText = o.items.map(i => `• ${i.name} × ${i.qty} — ${fmt(i.price * i.qty)}`).join('\n');
+    return `<div class="adm-order-item">
+      <div class="aoi-hdr">
+        <span class="aoi-id">ID: ${o.id}</span>
+        <span class="aoi-time">${esc(o.timestamp || '')}</span>
+      </div>
+      <div class="aoi-cust">${esc(o.name)}</div>
+      <div class="aoi-phone">📞 ${esc(o.phone)}</div>
+      <div class="aoi-addr">📍 ${esc(o.address)}</div>
+      <div class="aoi-items" style="white-space:pre-line">${esc(itemsText)}</div>
+      <div class="aoi-total">Total: ${fmt(o.total)}</div>
+      ${o.notes ? `<div class="aoi-notes">Notes: ${esc(o.notes)}</div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function clearOrders() {
+  if (!confirm('Clear ALL orders? This cannot be undone.')) return;
+  orders = [];
+  await cloud.put('orders', orders);
+  lsSet('lp_orders', orders);
+  renderAdminOrders();
+  showToast('All orders cleared.', 'info');
+}
+
+/* Admin — Settings */
+function renderAdminSettings() {
+  // Hours
+  const hrsGrid = document.getElementById('hrs-grid');
+  const hrs = settings.hours || DEFAULT_SETTINGS.hours;
+  hrsGrid.innerHTML = Object.entries(hrs).map(([day, val]) =>
+    `<div class="hrs-row">
+      <span class="hrs-lbl">${esc(day)}</span>
+      <input class="adm-inp" type="text" data-day="${esc(day)}" value="${esc(val)}" placeholder="e.g. 9:00 AM – 8:00 PM">
+    </div>`
+  ).join('');
+
+  // About
+  document.getElementById('about-edit').value = settings.aboutText || DEFAULT_SETTINGS.aboutText;
+}
+
+async function saveSettings() {
+  const inputs = document.querySelectorAll('#hrs-grid .adm-inp');
+  inputs.forEach(inp => {
+    const day = inp.dataset.day;
+    if (day) settings.hours[day] = inp.value;
+  });
+  await cloud.put('settings', settings);
+  lsSet('lp_settings', settings);
+  renderFooterHours();
+  showToast('Business hours saved!', 'success');
+}
+
+async function saveAbout() {
+  settings.aboutText = document.getElementById('about-edit').value;
+  await cloud.put('settings', settings);
+  lsSet('lp_settings', settings);
+  renderAbout();
+  showToast('About text saved!', 'success');
+}
+
+/* Admin — Product Form */
+function openProductForm(pid) {
+  editingProductId = pid || null;
+  const modal = document.getElementById('adm-form-modal');
+  const title = document.getElementById('adm-form-title');
+
+  // Populate category dropdown
+  const sel = document.getElementById('pf-category');
+  sel.innerHTML = `<option value="">— Select Category —</option>` +
+    CATS.filter(c => c !== 'All').map(c => `<option value="${c}">${c}</option>`).join('');
+
+  if (pid) {
+    const p = products.find(x => x.id === pid);
+    if (!p) return;
+    title.textContent = 'Edit Product';
+    document.getElementById('pf-id').value      = p.id;
+    document.getElementById('pf-name').value    = p.name;
+    document.getElementById('pf-price').value   = p.price;
+    document.getElementById('pf-category').value = p.category;
+    if (p.image) {
+      document.getElementById('img-preview').src = p.image;
+      document.getElementById('img-preview').classList.add('show');
+      document.getElementById('img-placeholder').classList.add('hidden');
+    } else {
+      document.getElementById('img-preview').classList.remove('show');
+      document.getElementById('img-placeholder').classList.remove('hidden');
+    }
+  } else {
+    title.textContent = 'Add New Product';
+    document.getElementById('pf-id').value      = '';
+    document.getElementById('pf-name').value    = '';
+    document.getElementById('pf-price').value   = '';
+    document.getElementById('pf-category').value = '';
+    document.getElementById('img-preview').classList.remove('show');
+    document.getElementById('img-placeholder').classList.remove('hidden');
+    document.getElementById('pf-image').value   = '';
+  }
+
+  modal.classList.add('open');
+}
+
+function closeProductForm() {
+  document.getElementById('adm-form-modal').classList.remove('open');
+  editingProductId = null;
+}
+
+function handleImageUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    document.getElementById('img-preview').src = ev.target.result;
+    document.getElementById('img-preview').classList.add('show');
+    document.getElementById('img-placeholder').classList.add('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+
+async function saveProduct() {
+  const name     = document.getElementById('pf-name').value.trim();
+  const priceStr = document.getElementById('pf-price').value;
+  const category = document.getElementById('pf-category').value;
+  const price    = parseFloat(priceStr);
+  const imgEl    = document.getElementById('img-preview');
+  const image    = imgEl.classList.contains('show') ? imgEl.src : null;
+
+  if (!name || !category || isNaN(price) || price < 0) {
+    showToast('Please fill in all required fields.', 'error');
+    return;
+  }
+
+  if (editingProductId) {
+    const idx = products.findIndex(x => x.id === editingProductId);
+    if (idx > -1) {
+      products[idx] = { ...products[idx], name, price, category, image };
+    }
+  } else {
+    products.push({ id: genId(), name, price, category, image });
+  }
+
+  await cloud.put('products', products);
+  lsSet('lp_products', products);
+  renderProducts();
+  renderAdminProducts();
+  closeProductForm();
+  showToast(editingProductId ? 'Product updated!' : 'Product added!', 'success');
+}
+
+/* Admin — Delete */
+function openConfirmDelete(pid) {
+  deleteTargetId = pid;
+  document.getElementById('confirm-modal').classList.add('open');
+  document.getElementById('confirm-del-btn').onclick = () => confirmDelete();
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirm-modal').classList.remove('open');
+  deleteTargetId = null;
+}
+
+async function confirmDelete() {
+  if (!deleteTargetId) return;
+  products = products.filter(p => p.id !== deleteTargetId);
+  await cloud.put('products', products);
+  lsSet('lp_products', products);
+  renderProducts();
+  renderAdminProducts();
+  closeConfirmModal();
+  showToast('Product deleted.', 'info');
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+   ============================================================ */
+function showToast(msg, type = 'info') {
+  const icons = { success:'fa-circle-check', error:'fa-circle-xmark', info:'fa-circle-info' };
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<i class="toast-icon fas ${icons[type] || icons.info}"></i><span>${esc(msg)}</span>`;
+  document.getElementById('toast-container').appendChild(toast);
+  setTimeout(() => {
+    toast.style.animation = 'toastOut .3s ease forwards';
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function fmt(n) {
+  return '₦' + Number(n).toLocaleString('en-NG');
+}
+function esc(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function genId() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+}
+function lsSet(k, v) {
+  try { localStorage.setItem(k, JSON.stringify(v)); } catch {}
+}
+function lsGet(k) {
+  try { return JSON.parse(localStorage.getItem(k)); } catch { return null; }
+}
+
+/* ============================================================
+   KEYBOARD SHORTCUTS
+   ============================================================ */
+docu

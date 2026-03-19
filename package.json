@@ -1,0 +1,15 @@
+{
+  "name": "loispeks-kitchen",
+  "version": "1.0.0",
+  "description": "Lois-Peks Kitchen — Nigerian Snacks, Pastries & Event Catering",
+  "private": true,
+  "scripts": {
+    "start": "echo 'Deploy to Netlify — no local build needed'"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
